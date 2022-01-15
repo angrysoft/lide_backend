@@ -24,7 +24,7 @@ class Locations(models.Model):
 
 
 class EmploymentType(models.Model):
-    name = models.CharField(max_length=100, unique=True)
+    name = models.CharField(max_length=100, unique=True, )
 
     def __str__(self) -> str:
         return self.name
@@ -35,17 +35,19 @@ class EmploymentType(models.Model):
 
 
 class Offers(models.Model):
-    position = models.OneToOneField(Positions, on_delete=models.PROTECT)
+    position = models.ForeignKey(Positions, on_delete=models.PROTECT)
     location = models.ManyToManyField(Locations)
     employment_type = models.ManyToManyField(EmploymentType)
     details = models.TextField(blank=True, null=True, verbose_name='Szczegóły')
     posted = models.BooleanField(default=False, null=False)
-    post_date = models.DateTimeField(auto_created=True, editable=True) 
     edited = models.DateTimeField(auto_now=True, editable=False)
 
     class Meta:
         verbose_name = "Oferta Pracy"
         verbose_name_plural = 'Oferty Pracy'
+    
+    def __str__(self) -> str:
+        return f"Oferta Pracy: {self.position} ({self.pk}) "
 
 
 class Posts(models.Model):
@@ -58,4 +60,7 @@ class Posts(models.Model):
     class Meta:
         verbose_name = "News"
         verbose_name_plural = 'News-y'
+    
+    def __str__(self) -> str:
+        return f"{self.title} ({self.pk})"
 
