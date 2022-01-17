@@ -32,7 +32,7 @@ class OffersView(View):
                 "id": offer.pk,
                 "position": offer.position,
                 "location": list(offer.location.all()),
-                "employment_type": list(offer.employment_type.all()),
+                "employmentType": list(offer.employment_type.all()),
                 "edited": offer.edited
             }) 
         return result
