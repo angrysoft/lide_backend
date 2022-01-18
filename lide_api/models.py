@@ -40,7 +40,7 @@ class Offers(models.Model):
     employment_type = models.ManyToManyField(EmploymentType)
     details = models.TextField(blank=True, null=True, verbose_name='Szczegóły')
     posted = models.BooleanField(default=False, null=False)
-    edited = models.DateTimeField(auto_now=True, editable=False)
+    edited = models.DateTimeField(auto_now=True,auto_created=True, editable=False)
 
     class Meta:
         verbose_name = "Oferta Pracy"
