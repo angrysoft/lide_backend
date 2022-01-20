@@ -1,6 +1,5 @@
 import json
 from typing import Any, Dict, List
-from wsgiref import headers
 from django.http import HttpResponse, HttpRequest
 from django.views import View
 from django.core.paginator import Paginator, Page
@@ -40,7 +39,18 @@ class OffersView(View):
             }) 
         return result
 
-class OffersDetails(View):
+class OfferDetails(View):
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        pass
+        offer = Offers.objects.get(offer_id)
+
+        result = {
+                "id": offer.pk,
+                "position": offer.position,
+                "location": list(offer.location.all()),
+                "employmentType": list(offer.employment_type.all()),
+                "edited": offer.edited
+            }
+
+        return HttpResponse(json.dumps(result, default=str, indent=4),
+                            content_type='application/json', )
         

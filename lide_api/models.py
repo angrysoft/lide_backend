@@ -35,12 +35,12 @@ class EmploymentType(models.Model):
 
 
 class Offers(models.Model):
-    position = models.ForeignKey(Positions, on_delete=models.PROTECT)
-    location = models.ManyToManyField(Locations)
-    employment_type = models.ManyToManyField(EmploymentType)
+    position = models.ForeignKey(Positions, on_delete=models.PROTECT, verbose_name="Stanowisko")
+    location = models.ManyToManyField(Locations, verbose_name="Lokalizacja")
+    employment_type = models.ManyToManyField(EmploymentType, verbose_name="Forma zatrudnienia")
     details = models.TextField(blank=True, null=True, verbose_name='Szczegóły')
-    posted = models.BooleanField(default=False, null=False)
-    edited = models.DateTimeField(auto_now=True,auto_created=True, editable=False)
+    posted = models.BooleanField(default=False, null=False, verbose_name="Opublikowany")
+    edited = models.DateTimeField(auto_now=True, auto_created=True, editable=False, verbose_name="Edytowany")
 
     class Meta:
         verbose_name = "Oferta Pracy"
@@ -54,7 +54,6 @@ class Posts(models.Model):
     title = models.CharField(max_length=100, unique=True)
     body = models.TextField()
     posted = models.BooleanField(default=False, null=False)
-    post_date = models.DateTimeField(auto_created=True, auto_now=True, editable=False) 
     edited = models.DateTimeField(auto_now=True, editable=False)
 
     class Meta:
