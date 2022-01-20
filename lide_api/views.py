@@ -1,13 +1,14 @@
 import json
 from typing import Any, Dict, List
 from django.http import HttpResponse, HttpRequest
+from django.shortcuts import get_object_or_404
 from django.views import View
 from django.core.paginator import Paginator, Page
 from .models import Offers
 
 
 class OffersView(View):
-    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+    def get(self, request: HttpRequest) -> HttpResponse:
         try:
             page_no:int = int(request.GET.get("page", "1"))
         except ValueError:
@@ -40,14 +41,15 @@ class OffersView(View):
         return result
 
 class OfferDetails(View):
-    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        offer = Offers.objects.get(offer_id)
-
+    def get(self, request: HttpRequest, offer_id:int = -1) -> HttpResponse:
+    
+        offer = get_object_or_404(Offers.objects.filter(posted__exact=True), id=offer_id)
         result = {
                 "id": offer.pk,
                 "position": offer.position,
                 "location": list(offer.location.all()),
                 "employmentType": list(offer.employment_type.all()),
+                "details": offer.details,
                 "edited": offer.edited
             }
 

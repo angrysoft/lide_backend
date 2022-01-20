@@ -21,5 +21,5 @@ from lide_api import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/offers', views.OffersView.as_view()),
-    path('api/v1/offer', views.OfferDetails.as_view()),
+    path('api/v1/offer/<int:offer_id>', views.OfferDetails.as_view()),
 ]
