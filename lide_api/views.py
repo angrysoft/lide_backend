@@ -41,6 +41,7 @@ class OffersView(View):
             }) 
         return result
 
+
 class OfferDetails(View):
     def get(self, request: HttpRequest, offer_id:int = -1) -> HttpResponse:
     
@@ -56,6 +57,7 @@ class OfferDetails(View):
 
         return HttpResponse(json.dumps(result, default=str, indent=4),
                             content_type='application/json', )
+  
         
 class OfferSearch(View):
     def get(self, request: HttpRequest):
@@ -68,8 +70,9 @@ class OfferSearch(View):
 
         offer_list: List[Dict[Any, Any]] = list(Offers.objects.all().filter(posted__exact=True)
                                                                     .order_by("-edited")
-                                                                    .filter(Q(position___name__icontains=query) | Q(location___name__icontains=query) | Q(employment_type___name__icontains=query) | Q(details__icontains=query)))
-        paginator = Paginator(offer_list, per_page=2, allow_empty_first_page=True)
+                                                                    .filter(Q(position__name__icontains=query) | Q(location__name__icontains=query) | Q(employment_type__name__icontains=query) | Q(details__icontains=query))
+                                                                    .distinct())
+        paginator = Paginator(offer_list, per_page=10, allow_empty_first_page=True)
         current_page: Page = paginator.get_page(page_no)
         offers:Dict[str, Any] = {
             "results": self.get_current_page(current_page),

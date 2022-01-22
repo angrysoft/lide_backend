@@ -22,4 +22,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/offers', views.OffersView.as_view()),
     path('api/v1/offer/<int:offer_id>', views.OfferDetails.as_view()),
+    path('api/v1/offers/search', views.OfferSearch.as_view()),
 ]
