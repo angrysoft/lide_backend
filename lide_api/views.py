@@ -8,29 +8,38 @@ from django.db.models import Q
 from .models import Offers
 
 
-class OffersView(View):
-    def get(self, request: HttpRequest) -> HttpResponse:
-        try:
-            page_no:int = int(request.GET.get("page", "1"))
-        except ValueError:
-            page_no: int = 1
 
-        offer_list: List[Dict[Any, Any]] = list(Offers.objects.all().filter(posted__exact=True).order_by("-edited"))
-        paginator = Paginator(offer_list, per_page=2, allow_empty_first_page=True)
-        current_page: Page = paginator.get_page(page_no)
-        # current_page = paginator.page(1)
+class OffersListView(View):
+    def get(self, request: HttpRequest) -> HttpResponse:
+        params: Dict[str, Any] = self._get_parameters(request)
+
+        offer_list = self._get_offers()
+        paginator = Paginator(offer_list, per_page=params.get('items', 2), allow_empty_first_page=True)
+        current_page: Page = paginator.get_page(params.get("page_no"))
+
         offers:Dict[str, Any] = {
-            "results": self.get_current_page(current_page),
+            "results": self._get_current_page(current_page),
             "pages" : paginator.num_pages,
             "currentPage": current_page.number,
             "pageRange": list(paginator.get_elided_page_range(current_page.number)) 
         }
         return HttpResponse(json.dumps(offers, default=str, indent=4),
                             content_type='application/json', )
-                            # headers = {'Access-Control-Allow-Origin':"*"})
 
-    def get_current_page(self, current_page: Page) -> List[Dict[str, Any]]:
-        result = []
+    def _get_parameters(self, request: HttpRequest) -> Dict[str, Any]:
+        results:Dict[str, Any] = {}
+        try:
+            results["page_no"] = int(request.GET.get("page", "1"))
+        except ValueError:
+            results["page_no"] = 1
+        return results
+
+    def _get_offers(self):
+        offer_list: List[Dict[Any, Any]] = list(Offers.objects.all().filter(posted__exact=True).order_by("-edited"))
+        return offer_list
+
+    def _get_current_page(self, current_page: Page) -> List[Dict[str, Any]]:
+        result:List[Dict[str, Any]] = []
         for offer in current_page.object_list:
             result.append({
                 "id": offer.pk,
@@ -59,32 +68,26 @@ class OfferDetails(View):
                             content_type='application/json', )
   
         
-class OfferSearch(View):
-    def get(self, request: HttpRequest):
+class OfferSearch(OffersListView):
+                        
+    def _get_parameters(self, request: HttpRequest) -> Dict[str, Any]:
+        results:Dict[str, Any] = super()._get_parameters(request)
         try:
-            page_no:int = int(request.GET.get("page", "1"))
+            results["query"] = str(request.GET.get("q", ""))
         except ValueError:
-            page_no: int = 1
+            results["page_no"] = 1
+        return results
 
-        query:str = str(request.GET.get("q", ""))
-
+    def _get_offers(self, params):
+        query = params.get(query)
         offer_list: List[Dict[Any, Any]] = list(Offers.objects.all().filter(posted__exact=True)
                                                                     .order_by("-edited")
                                                                     .filter(Q(position__name__icontains=query) | Q(location__name__icontains=query) | Q(employment_type__name__icontains=query) | Q(details__icontains=query))
                                                                     .distinct())
-        paginator = Paginator(offer_list, per_page=10, allow_empty_first_page=True)
-        current_page: Page = paginator.get_page(page_no)
-        offers:Dict[str, Any] = {
-            "results": self.get_current_page(current_page),
-            "pages" : paginator.num_pages,
-            "currentPage": current_page.number,
-            "pageRange": list(paginator.get_elided_page_range(current_page.number)) 
-        }
-        return HttpResponse(json.dumps(offers, default=str, indent=4),
-                            content_type='application/json', )
-                            # headers = {'Access-Control-Allow-Origin':"*"})
+                                                                    
+        return offer_list
         
-
+    
     def get_current_page(self, current_page: Page) -> List[Dict[str, Any]]:
         result = []
         for offer in current_page.object_list:
