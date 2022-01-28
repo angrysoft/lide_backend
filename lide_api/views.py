@@ -8,12 +8,11 @@ from django.db.models import Q
 from .models import Offers
 
 
-
 class OffersListView(View):
     def get(self, request: HttpRequest) -> HttpResponse:
         params: Dict[str, Any] = self._get_parameters(request)
 
-        offer_list = self._get_offers()
+        offer_list:list[Dict[Any, Any]] = self._get_offers(params)
         paginator = Paginator(offer_list, per_page=params.get('items', 2), allow_empty_first_page=True)
         current_page: Page = paginator.get_page(params.get("page_no"))
 
@@ -23,6 +22,7 @@ class OffersListView(View):
             "currentPage": current_page.number,
             "pageRange": list(paginator.get_elided_page_range(current_page.number)) 
         }
+
         return HttpResponse(json.dumps(offers, default=str, indent=4),
                             content_type='application/json', )
 
@@ -32,9 +32,11 @@ class OffersListView(View):
             results["page_no"] = int(request.GET.get("page", "1"))
         except ValueError:
             results["page_no"] = 1
+        
+        results["items"] = int(request.GET.get("items", 2))
         return results
 
-    def _get_offers(self):
+    def _get_offers(self, params: Dict[str, Any]) -> list[Dict[Any, Any]]:
         offer_list: List[Dict[Any, Any]] = list(Offers.objects.all().filter(posted__exact=True).order_by("-edited"))
         return offer_list
 
@@ -72,30 +74,14 @@ class OfferSearch(OffersListView):
                         
     def _get_parameters(self, request: HttpRequest) -> Dict[str, Any]:
         results:Dict[str, Any] = super()._get_parameters(request)
-        try:
-            results["query"] = str(request.GET.get("q", ""))
-        except ValueError:
-            results["page_no"] = 1
+        results["query"] = str(request.GET.get("q", ""))
         return results
 
-    def _get_offers(self, params):
-        query = params.get(query)
+    def _get_offers(self, params: Dict[str, Any]):
+        query:str = params.get("query", "")
         offer_list: List[Dict[Any, Any]] = list(Offers.objects.all().filter(posted__exact=True)
                                                                     .order_by("-edited")
                                                                     .filter(Q(position__name__icontains=query) | Q(location__name__icontains=query) | Q(employment_type__name__icontains=query) | Q(details__icontains=query))
                                                                     .distinct())
                                                                     
         return offer_list
-        
-    
-    def get_current_page(self, current_page: Page) -> List[Dict[str, Any]]:
-        result = []
-        for offer in current_page.object_list:
-            result.append({
-                "id": offer.pk,
-                "position": offer.position,
-                "location": list(offer.location.all()),
-                "employmentType": list(offer.employment_type.all()),
-                "edited": offer.edited
-            }) 
-        return result
