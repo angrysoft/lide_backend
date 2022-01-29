@@ -13,7 +13,7 @@ class OffersListView(View):
         params: Dict[str, Any] = self._get_parameters(request)
 
         offer_list:list[Dict[Any, Any]] = self._get_offers(params)
-        paginator = Paginator(offer_list, per_page=params.get('items', 2), allow_empty_first_page=True)
+        paginator = Paginator(offer_list, per_page=params.get('items', 10), allow_empty_first_page=True)
         current_page: Page = paginator.get_page(params.get("page_no"))
 
         offers:Dict[str, Any] = {
@@ -33,7 +33,7 @@ class OffersListView(View):
         except ValueError:
             results["page_no"] = 1
         
-        results["items"] = int(request.GET.get("items", 2))
+        results["items"] = int(request.GET.get("items", 10))
         return results
 
     def _get_offers(self, params: Dict[str, Any]) -> list[Dict[Any, Any]]:
