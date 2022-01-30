@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import include, path, re_path
 from lide_api import views
 
 
@@ -23,4 +23,8 @@ urlpatterns = [
     path('api/v1/offers', views.OffersListView.as_view()),
     path('api/v1/offer/<int:offer_id>', views.OfferDetails.as_view()),
     path('api/v1/offers/search', views.OfferSearch.as_view()),
+    path('api/v1/posts/', views.PostsListView.as_view()),
+    path('api/v1/post/<int:post_id>', views.PostDetails.as_view()),
+    path('api/v1/page/<slug:slug>', views.Page.as_view()),
+    re_path(r'^ckeditor/', include('ckeditor_uploader.urls')),
 ]

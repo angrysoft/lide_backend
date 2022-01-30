@@ -1,4 +1,5 @@
 from django.db import models
+from ckeditor_uploader.fields import RichTextUploadingField
 
 class Positions(models.Model):
     name = models.CharField(max_length=100, unique=True, verbose_name="Nazwa Stanowiska")
@@ -31,14 +32,14 @@ class EmploymentType(models.Model):
     
     class Meta:
         verbose_name = 'Forma Zatrudnienia'
-        verbose_name_plural = 'Formay Zatrudnienia'
+        verbose_name_plural = 'Formy Zatrudnienia'
 
 
 class Offers(models.Model):
     position = models.ForeignKey(Positions, on_delete=models.PROTECT, verbose_name="Stanowisko")
     location = models.ManyToManyField(Locations, verbose_name="Lokalizacja")
     employment_type = models.ManyToManyField(EmploymentType, verbose_name="Forma zatrudnienia")
-    details = models.TextField(blank=True, null=True, verbose_name='Szczegóły')
+    details = RichTextUploadingField(blank=True, null=True, verbose_name='Szczegóły')
     posted = models.BooleanField(default=False, null=False, verbose_name="Opublikowany")
     edited = models.DateTimeField(auto_now=True, auto_created=True, editable=False, verbose_name="Edytowany")
 
@@ -51,10 +52,11 @@ class Offers(models.Model):
 
 
 class Posts(models.Model):
-    title = models.CharField(max_length=100, unique=True)
-    body = models.TextField()
-    posted = models.BooleanField(default=False, null=False)
-    edited = models.DateTimeField(auto_now=True, editable=False)
+    title = models.CharField(max_length=100, unique=True, verbose_name="Tytuł")
+    short = models.TextField(blank=True, null=True, verbose_name="Zajawka")
+    body = RichTextUploadingField(blank=True, null=True, verbose_name='Treść')
+    posted = models.BooleanField(default=False, null=False, verbose_name="Opublikowany")
+    edited = models.DateTimeField(auto_now=True, editable=False, verbose_name="Edytowany")
 
     class Meta:
         verbose_name = "News"
@@ -63,3 +65,15 @@ class Posts(models.Model):
     def __str__(self) -> str:
         return f"{self.title} ({self.pk})"
 
+class Pages(models.Model):
+    slug = models.SlugField(max_length=100, unique=True, null=False, verbose_name="Adres strony")
+    title = models.CharField(max_length=100, unique=True, verbose_name="Tytuł")
+    body = RichTextUploadingField(blank=True, null=True, verbose_name='Treść')
+    edited = models.DateTimeField(auto_now=True, editable=False, verbose_name="Edytowany")
+
+    class Meta:
+        verbose_name = "Strona"
+        verbose_name_plural = 'Strony'
+    
+    def __str__(self) -> str:
+        return f"{self.title} ({self.pk})"

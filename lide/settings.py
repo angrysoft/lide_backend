@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'lide_api',
+    'ckeditor',
+    'ckeditor_uploader',
 ]
 
 MIDDLEWARE = [
@@ -121,6 +123,10 @@ USE_TZ = False
 
 STATIC_URL = '/static/'
 
+MEDIA_ROOT = '/home/seba/workspace/lide_backend/lide/media'
+
+MEDIA_URL = '/media/'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
@@ -136,3 +142,21 @@ CORS_ORIGIN_WHITELIST = [
 ADMIN_REORDER = (
     ("lide_api", ("Offers", "Positions", "Locations", "EmploymentType", "Posts"))
 )
+
+CKEDITOR_UPLOAD_PATH = "uploads/"
+CKEDITOR_ALLOW_NONIMAGE_FILES = False
+
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'Custom',
+        'toolbar_Custom': [
+            ['Bold', 'Italic', 'Underline'],
+            ["TextColor", "BGColor"],
+            ["Smiley", "SpecialChar"],
+            ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
+            ['Link', 'Unlink'],
+            ["Image", "Flash", "Table", "HorizontalRule"],
+            # ['RemoveFormat', 'Source']
+        ]
+    }
+}
