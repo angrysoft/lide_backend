@@ -3,15 +3,19 @@ from .models import Positions, Locations, EmploymentType, Offers, Posts, Pages
 
 
 class OffersAdmin(admin.ModelAdmin):
-    list_filter = ("posted", )
+    list_filter = ("posted",)
     list_display = ("position", "edited", "posted")
-    search_fields = ["position__name", "location__name", "employment_type__name", "details"]
+    search_fields = [
+        "position__name",
+        "location__name",
+        "employment_type__name",
+        "details",
+    ]
     filter_horizontal = ("location", "employment_type")
 
 
-
 class PostsAdmin(admin.ModelAdmin):
-    list_filter = ("posted", )
+    list_filter = ("posted",)
     list_display = ("title", "edited", "posted")
     search_fields = ["title"]
 
