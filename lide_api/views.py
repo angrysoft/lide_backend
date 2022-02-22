@@ -1,10 +1,11 @@
+from os import abort
 from typing import Any, Dict, List
-from django.http import HttpResponse, HttpRequest, JsonResponse
+from django.http import Http404, HttpResponse, HttpRequest, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.views import View
 from django.core.paginator import Paginator, Page
 from django.db.models import Q
-from .models import Offers, Posts, Pages
+from .models import Offers, Posts, Pages, Contacts
 
 
 class GenericListView(View):
@@ -115,3 +116,11 @@ class Page(View):
 
         page = get_object_or_404(Pages.objects.filter(slug__exact=slug))
         return JsonResponse(page.serialize(), safe=False)
+
+
+class ContactsView(View):
+    def get(self, request: HttpRequest) -> HttpResponse:
+        if not (contacts := Contacts.objects.all()):
+            raise Http404
+
+        return JsonResponse([contact.serialize() for contact in contacts], safe=False)

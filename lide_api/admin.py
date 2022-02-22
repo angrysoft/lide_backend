@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Positions, Locations, EmploymentType, Offers, Posts, Pages
+from .models import Contacts, Positions, Locations, EmploymentType, Offers, Posts, Pages
 
 
 class OffersAdmin(admin.ModelAdmin):
@@ -20,9 +20,11 @@ class PostsAdmin(admin.ModelAdmin):
     search_fields = ["title"]
 
 
+admin.site.site_header = "Lide Panel Administracyjny"
 admin.site.register(Offers, OffersAdmin)
 admin.site.register(Positions)
 admin.site.register(Locations)
 admin.site.register(EmploymentType)
 admin.site.register(Posts, PostsAdmin)
 admin.site.register(Pages)
+admin.site.register(Contacts)
