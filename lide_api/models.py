@@ -1,3 +1,4 @@
+from typing import Any, Dict
 from django.db import models
 from ckeditor_uploader.fields import RichTextUploadingField
 
@@ -54,12 +55,28 @@ class Offers(models.Model):
         auto_now=True, auto_created=True, editable=False, verbose_name="Edytowany"
     )
 
-    class Meta:
-        verbose_name = "Oferta Pracy"
-        verbose_name_plural = "Oferty Pracy"
+    def serialize_short(self):
+        return {
+            "id": self.id,
+            "position": self.position.name,
+            "location": [location.name for location in self.location.all()],
+            "employmentType": [
+                emplType.name for emplType in self.employment_type.all()
+            ],
+            "edited": self.edited,
+        }
+
+    def serialize(self) -> Dict[str, Any]:
+        result = self.serialize_short()
+        result["details"] = self.details
+        return result
 
     def __str__(self) -> str:
         return f"Oferta Pracy: {self.position} ({self.pk}) "
+
+    class Meta:
+        verbose_name = "Oferta Pracy"
+        verbose_name_plural = "Oferty Pracy"
 
 
 class Posts(models.Model):
@@ -71,12 +88,25 @@ class Posts(models.Model):
         auto_now=True, editable=False, verbose_name="Edytowany"
     )
 
+    def __str__(self) -> str:
+        return f"{self.title} ({self.pk})"
+
+    def serialize_short(self):
+        return {
+            "id": self.id,
+            "title": self.title,
+            "short": self.short,
+            "edited": self.edited,
+        }
+
+    def serialize(self):
+        result = self.serialize_short()
+        result["body"] = self.body
+        return result
+
     class Meta:
         verbose_name = "News"
         verbose_name_plural = "News-y"
-
-    def __str__(self) -> str:
-        return f"{self.title} ({self.pk})"
 
 
 class Pages(models.Model):
@@ -88,6 +118,9 @@ class Pages(models.Model):
     edited = models.DateTimeField(
         auto_now=True, editable=False, verbose_name="Edytowany"
     )
+
+    def serialize(self) -> Dict[str, Any]:
+        return {"title": self.title, "body": self.body, "edited": self.edited}
 
     class Meta:
         verbose_name = "Strona"

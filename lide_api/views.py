@@ -1,6 +1,5 @@
-import json
 from typing import Any, Dict, List
-from django.http import Http404, HttpResponse, HttpRequest
+from django.http import HttpResponse, HttpRequest, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.views import View
 from django.core.paginator import Paginator, Page
@@ -25,10 +24,7 @@ class GenericListView(View):
             "pageRange": list(paginator.get_elided_page_range(current_page.number)),
         }
 
-        return HttpResponse(
-            json.dumps(result, default=str),
-            content_type="application/json",
-        )
+        return JsonResponse(result, safe=False)
 
     def _get_items(self, params: Dict[str, Any]) -> list[Dict[Any, Any]]:
 
@@ -59,18 +55,7 @@ class OffersListView(GenericListView):
         return offer_list
 
     def _get_current_page(self, current_page: Page) -> List[Dict[str, Any]]:
-        result: List[Dict[str, Any]] = []
-        for offer in current_page.object_list:
-            result.append(
-                {
-                    "id": offer.pk,
-                    "position": offer.position,
-                    "location": list(offer.location.all()),
-                    "employmentType": list(offer.employment_type.all()),
-                    "edited": offer.edited,
-                }
-            )
-        return result
+        return [offer.serialize_short() for offer in current_page.object_list]
 
 
 class OfferDetails(View):
@@ -79,19 +64,8 @@ class OfferDetails(View):
         offer = get_object_or_404(
             Offers.objects.filter(posted__exact=True), id=offer_id
         )
-        result = {
-            "id": offer.pk,
-            "position": offer.position,
-            "location": list(offer.location.all()),
-            "employmentType": list(offer.employment_type.all()),
-            "details": offer.details,
-            "edited": offer.edited,
-        }
 
-        return HttpResponse(
-            json.dumps(result, default=str),
-            content_type="application/json",
-        )
+        return JsonResponse(offer.serialize(), safe=False)
 
 
 class OfferSearch(OffersListView):
@@ -126,48 +100,18 @@ class PostsListView(GenericListView):
         return posts_list
 
     def _get_current_page(self, current_page: Page) -> List[Dict[str, Any]]:
-        result: List[Dict[str, Any]] = []
-        for post in current_page.object_list:
-            result.append(
-                {
-                    "id": post.pk,
-                    "title": post.title,
-                    "short": post.short,
-                    "edited": post.edited,
-                }
-            )
-        return result
+        return [post.serialize_short() for post in current_page.object_list]
 
 
 class PostDetails(View):
     def get(self, request: HttpRequest, post_id: int = -1) -> HttpResponse:
 
         post = get_object_or_404(Posts.objects.filter(posted__exact=True), id=post_id)
-        result = {
-            "id": post.pk,
-            "title": post.title,
-            "body": post.body,
-            "edited": post.edited,
-        }
-        return HttpResponse(
-            json.dumps(result, default=str),
-            content_type="application/json",
-        )
+        return JsonResponse(post.serialize(), safe=False)
 
 
 class Page(View):
     def get(self, request: HttpRequest, slug: str = "") -> HttpResponse:
 
-        page = Pages.objects.filter(slug__exact=slug)
-        if not page:
-            raise Http404
-        print(page)
-        result: Dict[str, Any] = {
-            "title": page.title,
-            "body": page.body,
-            "edited": page.edited,
-        }
-        return HttpResponse(
-            json.dumps(result, default=str),
-            content_type="application/json",
-        )
+        page = get_object_or_404(Pages.objects.filter(slug__exact=slug))
+        return JsonResponse(page.serialize(), safe=False)
