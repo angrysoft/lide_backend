@@ -123,4 +123,8 @@ class ContactsView(View):
         if not (contacts := Contacts.objects.all()):
             raise Http404
 
-        return JsonResponse([contact.serialize() for contact in contacts], safe=False)
+        results = {
+            "results": [contact.serialize() for contact in contacts]
+        }
+
+        return JsonResponse(results, safe=False)
