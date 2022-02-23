@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "lide_api",
+    "contact",
     "ckeditor",
     "ckeditor_uploader",
 ]
@@ -172,3 +173,10 @@ CKEDITOR_CONFIGS = {
         ],
     }
 }
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST = environ["EMAIL_HOST"]
+EMAIL_HOST_USER = environ["EMAIL_HOST_USER"]
+EMAIL_HOST_PASSWORD = environ["EMAIL_HOST_PASSWORD"]

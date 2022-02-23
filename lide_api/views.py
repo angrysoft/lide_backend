@@ -1,4 +1,3 @@
-from os import abort
 from typing import Any, Dict, List
 from django.http import Http404, HttpResponse, HttpRequest, JsonResponse
 from django.shortcuts import get_object_or_404
@@ -123,8 +122,6 @@ class ContactsView(View):
         if not (contacts := Contacts.objects.all()):
             raise Http404
 
-        results = {
-            "results": [contact.serialize() for contact in contacts]
-        }
+        results = {"results": [contact.serialize() for contact in contacts]}
 
         return JsonResponse(results, safe=False)

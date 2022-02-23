@@ -139,7 +139,12 @@ class Contacts(models.Model):
         return str(self.name)
 
     def serialize(self) -> Dict[str, Any]:
-        return {"name": self.name, "phone": self.phone, "mail": self.mail}
+        return {
+            "id": self.id,
+            "name": self.name,
+            "phone": self.phone,
+            "mail": self.mail,
+        }
 
     class Meta:
         verbose_name = "Kontakt"
