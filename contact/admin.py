@@ -1,8 +1,7 @@
 from django.contrib import admin
 
-from contact.models import MailSettings, Message
+from contact.models import Message
 
 # Register your models here.
 
 admin.site.register(Message)
-admin.site.register(MailSettings)

@@ -11,4 +11,3 @@ class MailView(View):
         print(request.POST)
         msg = " ok"
         return redirect(f"/enquiry?msg={msg}")
-
