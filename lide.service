@@ -8,6 +8,7 @@ Wants=network-online.target
 [Service]
 User=http
 Group=http
+EnvironmentFile=/etc/lide.conf
 RuntimeDirectory=gunicorn_django
 WorkingDirectory=/var/www/lide/backend
 ExecStart=/var/www/lide/bin/gunicorn lide.asgi:application -k uvicorn.workers.UvicornWorker

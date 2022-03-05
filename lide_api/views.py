@@ -4,7 +4,10 @@ from django.shortcuts import get_object_or_404
 from django.views import View
 from django.core.paginator import Paginator, Page
 from django.db.models import Q
-from .models import Offers, Posts, Pages, Contacts
+from .models import Contacts
+from offers.models import Offers
+from posts.models import Posts
+from pages.models import Pages
 
 
 class GenericListView(View):

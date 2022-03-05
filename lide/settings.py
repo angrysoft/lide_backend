@@ -25,7 +25,7 @@ SECRET_KEY = environ["SECRET_KEY"]
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = environ["DEBUG"]
 
 ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 CSRF_TRUSTED_ORIGINS = ['http://localhost']
@@ -40,6 +40,10 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "lide_api",
+    "posts",
+    "pages",
+    "offers",
+    "settings",
     "contact",
     "ckeditor",
     "ckeditor_uploader",
@@ -79,10 +83,20 @@ WSGI_APPLICATION = "lide.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.sqlite3",
+#         "NAME": BASE_DIR / "db.sqlite3",
+#     }
+# }
+
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+    'default': {
+        'ENGINE': environ["DBENGINE"],
+        'NAME': environ["DBNAME"],
+        "USER": environ["DBUSER"],
+        "PASSWORD": environ["DBPASSWD"],
+        "HOST": environ["DBHOST"]
     }
 }
 
@@ -125,7 +139,7 @@ USE_TZ = False
 
 STATIC_URL = "/lide/static/"
 
-MEDIA_ROOT = "/home/seba/workspace/lide_backend/lide/media"
+MEDIA_ROOT = environ["MEDIA_ROOT"]
 
 MEDIA_URL = "/media/"
 
