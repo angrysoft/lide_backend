@@ -98,7 +98,8 @@ DATABASES = {
         "PASSWORD": environ["DBPASSWD"],
         "HOST": environ["DBHOST"],
         'OPTIONS': {
-            'read_default_file': 'etc/my.cnf.d/client.cnf',
+                    'charset': 'utf8mb4',
+                    'use_unicode': True,
         },
     }
 }
