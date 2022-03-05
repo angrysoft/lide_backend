@@ -6,10 +6,11 @@ After=network-online.target
 Wants=network-online.target
 
 [Service]
+Type=notify
 User=http
 Group=http
 EnvironmentFile=/etc/lide.conf
-RuntimeDirectory=gunicorn_django
+RuntimeDirectory=gunicorn
 WorkingDirectory=/var/www/lide/backend
 ExecStart=/var/www/lide/bin/gunicorn  lide.asgi:application -k uvicorn.workers.UvicornWorker --proxy-protocol --bind unix:/run/lide.sock -m 007 --timeout 120
 ExecReload=/bin/kill -s HUP $MAINPID
