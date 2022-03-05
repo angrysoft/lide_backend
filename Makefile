@@ -14,6 +14,7 @@ install:
 	install -v -m 755 -g $(GRP) -o $(USR) manage.py /var/www/lide/backend/manage.py
 	install -v -m 755 -g $(GRP) -o $(USR) requirements.txt /var/www/lide/backend/requirements.txt
 	install -v -m 655 lide.service -D $(DESTDIR)/usr/lib/systemd/system/lide.service
+	install -v -m 655 lide.socket -D $(DESTDIR)/usr/lib/systemd/system/lide.socket
 
 
 uninstall:
