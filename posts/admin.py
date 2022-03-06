@@ -7,4 +7,5 @@ class PostsAdmin(admin.ModelAdmin):
     list_display = ("title", "edited", "posted")
     search_fields = ["title"]
 
+
 admin.site.register(Posts, PostsAdmin)

@@ -11,4 +11,4 @@ class Message(models.Model):
 
     class Meta:
         verbose_name = "Wiadomość"
-        verbose_name_plural="Wiadomości"
+        verbose_name_plural = "Wiadomości"

@@ -28,7 +28,7 @@ CSRF_COOKIE_SECURE = True
 DEBUG = environ["DEBUG"]
 
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "lide.angrysoft.ovh"]
-CSRF_TRUSTED_ORIGINS = ['http://localhost']
+CSRF_TRUSTED_ORIGINS = ["http://localhost"]
 
 # Application definition
 
@@ -91,19 +91,20 @@ WSGI_APPLICATION = "lide.wsgi.application"
 # }
 
 DATABASES = {
-    'default': {
-        'ENGINE': environ["DBENGINE"],
-        'NAME': environ["DBNAME"],
+    "default": {
+        "ENGINE": environ["DBENGINE"],
+        "NAME": environ["DBNAME"],
         "USER": environ["DBUSER"],
         "PASSWORD": environ["DBPASSWD"],
         "HOST": environ["DBHOST"],
-        'OPTIONS': {
-                    'charset': 'utf8mb4',
-                    'use_unicode': True,
-        },
     }
 }
 
+if DATABASES["default"]["ENGINE"] == "django.db.backends.mysql":
+    DATABASES["default"]["OPTIONS"] = {
+        "charset": "utf8mb4",
+        "use_unicode": True,
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -193,7 +194,7 @@ CKEDITOR_CONFIGS = {
     }
 }
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST = environ["EMAIL_HOST"]
