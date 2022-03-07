@@ -9,5 +9,5 @@ class MessageForm(forms.Form):
     lname = forms.CharField()
     email = forms.EmailField()
     phone = forms.CharField()
-    msg = forms.Textarea()
+    msg = forms.CharField(widget=forms.Textarea)
     rodo = forms.BooleanField()

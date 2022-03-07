@@ -1,9 +1,8 @@
-from unittest import result
-from django.http import HttpRequest
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
+from django.core.mail import BadHeaderError, send_mail
 from django.shortcuts import redirect
 from django.views import View
 from django import forms
-from django.core.mail import EmailMessage
 from .forms import MessageForm
 from .models import Message
 import requests
@@ -26,9 +25,10 @@ class MailView(View):
             )
 
             ret = resp.json()
-            if ret["success"]:
+            print(ret)
+            if ret["success"] and ret["score"] > 0.5 and ret["action"] == "submit":
                 # self.save_msg(msg_form)
-                self.send_mail(msg_form)
+                return self._mail(msg_form)
             else:
                 msg = " ".join(ret["error-codes"])
         return redirect(f"/enquiry?msg={msg}")
@@ -43,12 +43,12 @@ class MailView(View):
         msg_obj.msg = msg_form.cleaned_data.get("msg")
         msg_obj.save()
 
-    def send_mail(self, msg_form: forms.Form):
+    def _mail(self, msg_form: forms.Form):
+
         to_email_list = [
             mail.value
             for mail in Settings.objects.all().filter(name__exact="contact_mail")
         ]
-        print(to_email_list)
         if not to_email_list:
             print("Contact email not found")
             return
@@ -60,11 +60,11 @@ class MailView(View):
         Telefon : {msg_form.cleaned_data.get("phone")}
         Wiadomość : {msg_form.cleaned_data.get("msg")}
         """
-        email = EmailMessage(
-            "Widomość",
-            msg,
-            "info@angrysoft.ovh",
-            to_email_list,
-            reply_to=[msg_form.cleaned_data.get("email")],
-        )
-        email.send()
+        subject = f'{msg_form.cleaned_data.get("iam")} - {msg_form.cleaned_data.get("fname")} {msg_form.cleaned_data.get("lname")}'
+
+        try:
+            send_mail(subject, msg, "info@angrysoft.ovh", to_email_list)
+        except BadHeaderError:
+            return HttpResponse("Invalid header found.")
+
+        return HttpResponseRedirect("/")
