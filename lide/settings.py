@@ -27,7 +27,10 @@ CSRF_COOKIE_SECURE = True
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = environ["DEBUG"]
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "lide.angrysoft.ovh"]
+ALLOWED_HOSTS = [
+    "localhost", "127.0.0.1", "lide.angrysoft.ovh", "lide.pl", "www.lide.pl"
+]
+
 CSRF_TRUSTED_ORIGINS = ["http://localhost"]
 
 # Application definition
