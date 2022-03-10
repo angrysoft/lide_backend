@@ -7,9 +7,11 @@ from .forms import MessageForm
 from .models import Message
 import requests
 from settings.models import Settings
+from django.views.decorators.csrf import requires_csrf_token
 
 
 class MailView(View):
+    @requires_csrf_token
     def get(self, request: HttpRequest):
         return HttpResponse("ok")
 

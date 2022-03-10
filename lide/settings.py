@@ -27,7 +27,7 @@ SESSION_COOKIE_SECURE = True
 CSRF_USE_SESSIONS = False
 CSRF_COOKIE_HTTPONLY = False
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = environ["DEBUG"] or False
+DEBUG = False
 
 ALLOWED_HOSTS = [
     "localhost", "127.0.0.1", "lide.angrysoft.ovh", "lide.pl", "www.lide.pl"
