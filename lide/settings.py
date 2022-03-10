@@ -31,7 +31,11 @@ ALLOWED_HOSTS = [
     "localhost", "127.0.0.1", "lide.angrysoft.ovh", "lide.pl", "www.lide.pl"
 ]
 
-CSRF_TRUSTED_ORIGINS = ["http://localhost"]
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost",
+    "https://lide.pl",
+    "https://www.lide.pl"
+]
 
 # Application definition
 
