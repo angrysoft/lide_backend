@@ -152,9 +152,8 @@ USE_TZ = False
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = "/lide/static/"
-# STATIC_ROOT = environ["STATIC_ROOT"]
+STATIC_ROOT = environ["STATIC_ROOT"]
 MEDIA_ROOT = environ["MEDIA_ROOT"]
-
 MEDIA_URL = "/media/"
 
 # Default primary key field type
