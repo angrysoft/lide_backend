@@ -11,7 +11,7 @@ from settings.models import Settings
 
 class MailView(View):
     def get(self, request: HttpRequest):
-        return "ok"
+        return HttpResponse("ok")
 
     def post(self, request: HttpRequest):
         msg = "ok"
