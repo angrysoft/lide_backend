@@ -30,14 +30,14 @@ CSRF_COOKIE_HTTPONLY = False
 DEBUG = False
 
 ALLOWED_HOSTS = [
-    "localhost", "127.0.0.1", "lide.angrysoft.ovh", "lide.pl", "www.lide.pl"
+    "localhost",
+    "127.0.0.1",
+    "lide.angrysoft.ovh",
+    "lide.pl",
+    "www.lide.pl",
 ]
 
-CSRF_TRUSTED_ORIGINS = [
-    "http://localhost",
-    "https://lide.pl",
-    "https://www.lide.pl"
-]
+CSRF_TRUSTED_ORIGINS = ["http://localhost", "https://lide.pl", "https://www.lide.pl"]
 
 # Application definition
 

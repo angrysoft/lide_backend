@@ -1,6 +1,11 @@
-from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest, HttpResponseRedirect
+from django.conf import settings
+from django.http import (
+    HttpRequest,
+    HttpResponse,
+    HttpResponseBadRequest,
+    HttpResponseRedirect,
+)
 from django.core.mail import BadHeaderError, send_mail
-from django.shortcuts import redirect
 from django.views import View
 from django import forms
 from .forms import MessageForm
@@ -71,7 +76,7 @@ class MailView(View):
         subject = f'{msg_form.cleaned_data.get("iam")} - {msg_form.cleaned_data.get("fname")} {msg_form.cleaned_data.get("lname")}'
 
         try:
-            send_mail(subject, msg, "info@angrysoft.ovh", to_email_list)
+            send_mail(subject, msg, settings.EMAIL_HOST_USER, to_email_list)
         except BadHeaderError:
             return HttpResponse("Invalid header found.")
 
