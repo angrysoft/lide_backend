@@ -25,7 +25,7 @@ SECRET_KEY = environ["SECRET_KEY"]
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = environ["DEBUG"]
+DEBUG = environ["DEBUG"] or False
 
 ALLOWED_HOSTS = [
     "localhost", "127.0.0.1", "lide.angrysoft.ovh", "lide.pl", "www.lide.pl"
