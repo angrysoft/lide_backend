@@ -109,7 +109,9 @@ class PostsListView(GenericListView):
 class PostDetails(View):
     def get(self, request: HttpRequest, post_id: int = -1) -> HttpResponse:
 
-        post = get_object_or_404(Posts.objects.filter(posted__exact=True), id=post_id)
+        post = get_object_or_404(
+            Posts.objects.filter(posted__exact=True), id=post_id
+        )
         return JsonResponse(post.serialize(), safe=False)
 
 
