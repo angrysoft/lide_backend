@@ -25,7 +25,6 @@ class MailView(View):
         msg = "ok"
         secret = Settings.objects.get(name__exact="grecaptcha")
         msg_form = MessageForm(request.POST)
-        print(request.POST)
         if msg_form.is_valid():
             token = msg_form.cleaned_data.get("google_recaptcha")
             resp = requests.post(
@@ -34,7 +33,6 @@ class MailView(View):
             )
 
             ret = resp.json()
-            print(ret)
             if ret["success"] and ret["score"] > 0.5 and ret["action"] == "submit":
                 self.save_msg(msg_form)
                 return self._mail(msg_form)
