@@ -11,3 +11,4 @@ class MessageForm(forms.Form):
     phone = forms.CharField()
     msg = forms.CharField(widget=forms.Textarea)
     rodo = forms.BooleanField()
+    cv = forms.FileField(required=False)

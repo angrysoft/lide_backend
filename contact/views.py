@@ -5,7 +5,7 @@ from django.http import (
     HttpResponseBadRequest,
     HttpResponseRedirect,
 )
-from django.core.mail import BadHeaderError, send_mail
+from django.core.mail import BadHeaderError, EmailMessage
 from django.views import View
 from django import forms
 from .forms import MessageForm
@@ -24,7 +24,7 @@ class MailView(View):
     def post(self, request: HttpRequest):
         msg = "ok"
         secret = Settings.objects.get(name__exact="grecaptcha")
-        msg_form = MessageForm(request.POST)
+        msg_form = MessageForm(request.POST, request.FILES)
         if msg_form.is_valid():
             token = msg_form.cleaned_data.get("google_recaptcha")
             resp = requests.post(
@@ -74,7 +74,17 @@ class MailView(View):
         subject = f'{msg_form.cleaned_data.get("iam")} - {msg_form.cleaned_data.get("fname")} {msg_form.cleaned_data.get("lname")}'
 
         try:
-            send_mail(subject, msg, settings.EMAIL_HOST_USER, to_email_list)
+            email = EmailMessage(
+                subject=subject,
+                body=msg,
+                from_email=settings.EMAIL_HOST_USER,
+                to=to_email_list,
+                reply_to=msg_form.cleaned_data.get("email")
+            )
+            if cv := msg_form.cleaned_data.get("cv"):
+                print(cv.content_type)
+                email.attach(cv)
+            email.send()
         except BadHeaderError:
             return HttpResponse("Invalid header found.")
 
