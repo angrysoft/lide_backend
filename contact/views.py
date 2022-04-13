@@ -82,8 +82,8 @@ class MailView(View):
                 reply_to=msg_form.cleaned_data.get("email")
             )
             if cv := msg_form.cleaned_data.get("cv"):
-                print(cv.content_type)
-                email.attach(cv)
+                print(cv.name, cv.content_type)
+                email.attach(cv.name, cv, cv.content_type)
             email.send()
         except BadHeaderError:
             return HttpResponse("Invalid header found.")
