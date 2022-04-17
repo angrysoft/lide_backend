@@ -31,7 +31,6 @@ class MailView(View):
                 "https://www.google.com/recaptcha/api/siteverify",
                 {"secret": secret.value, "response": token},
             )
-
             ret = resp.json()
             if ret["success"] and ret["score"] > 0.5 and ret["action"] == "submit":
                 self.save_msg(msg_form)
@@ -40,7 +39,7 @@ class MailView(View):
                 msg = " ".join(ret["error-codes"])
                 return HttpResponseBadRequest(msg)
         else:
-            print(msg_form.errors)
+            print(f"error {msg_form.errors}")
             msg = "invalid data"
             return HttpResponseBadRequest(msg)
 
@@ -55,7 +54,12 @@ class MailView(View):
         msg_obj.save()
 
     def _mail(self, msg_form: forms.Form):
-
+        allowed_attachments = [
+            "application/pdf",
+            "application/msword",
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            "application/vnd.oasis.opendocument.text",
+        ]
         to_email_list = [
             mail.value
             for mail in Settings.objects.all().filter(name__exact="contact_mail")
@@ -75,15 +79,15 @@ class MailView(View):
 
         try:
             email = EmailMessage(
-                subject=subject,
-                body=msg,
-                from_email=settings.EMAIL_HOST_USER,
-                to=to_email_list,
-                reply_to=msg_form.cleaned_data.get("email")
+                subject,
+                msg,
+                settings.EMAIL_HOST_USER,
+                to_email_list,
+                reply_to=[msg_form.cleaned_data.get("email")],
             )
-            if cv := msg_form.cleaned_data.get("cv"):
-                print(cv.name, cv.content_type)
-                email.attach(cv.name, cv, cv.content_type)
+            cv = msg_form.cleaned_data.get("cv")
+            if cv and cv.content_type in allowed_attachments:
+                email.attach(cv.name, cv.read(), cv.content_type)
             email.send()
         except BadHeaderError:
             return HttpResponse("Invalid header found.")

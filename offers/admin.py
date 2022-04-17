@@ -4,7 +4,7 @@ from .models import Offers, Positions, Locations, EmploymentType
 
 class OffersAdmin(admin.ModelAdmin):
     list_filter = ("posted",)
-    list_display = ("position", "edited", "posted")
+    list_display = ("pk", "position", "edited", "posted")
     search_fields = [
         "position__name",
         "location__name",
