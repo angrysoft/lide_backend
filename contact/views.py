@@ -64,6 +64,11 @@ class MailView(View):
             mail.value
             for mail in Settings.objects.all().filter(name__exact="contact_mail")
         ]
+        
+        job_link = ""
+        if job := msg_form.cleaned_data.get("job"):
+            job_link = f"https://lide.pl/job/{job}"
+
         if not to_email_list:
             print("Contact email not found")
             return
@@ -74,6 +79,7 @@ class MailView(View):
         Email : {msg_form.cleaned_data.get("email")}
         Telefon : {msg_form.cleaned_data.get("phone")}
         Wiadomość : {msg_form.cleaned_data.get("msg")}
+        {job_link}
         """
         subject = f'{msg_form.cleaned_data.get("iam")} - {msg_form.cleaned_data.get("fname")} {msg_form.cleaned_data.get("lname")}'
 
