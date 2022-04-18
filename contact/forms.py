@@ -12,3 +12,4 @@ class MessageForm(forms.Form):
     msg = forms.CharField(widget=forms.Textarea)
     rodo = forms.BooleanField()
     cv = forms.FileField(required=False)
+    job = forms.IntegerField(required=False)

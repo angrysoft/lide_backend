@@ -67,7 +67,7 @@ class MailView(View):
         
         job_link = ""
         if job := msg_form.cleaned_data.get("job"):
-            job_link = f"https://lide.pl/job/{job}"
+            job_link = f"Aplikacja na ogłoszenie https://lide.pl/job/{job}"
 
         if not to_email_list:
             print("Contact email not found")
